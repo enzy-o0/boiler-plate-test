@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Form, Input, Button, Checkbox } from 'antd';
 import { useDispatch } from 'react-redux';
 import { SignInUser } from '../../../_actions/user_action'
@@ -6,6 +6,11 @@ import { withRouter } from 'react-router-dom'
 
 function SignIn(props) {
     const dispatch = useDispatch();
+    const rememberMeChecked = localStorage.getItem("rememberMe") ? true : false;
+    const [rememberMe, setRememberMe] = useState(rememberMeChecked)
+
+    const initial = localStorage.getItem("rememberMe") ? localStorage.getItem("rememberMe") : '';
+
 
     const layout = {
         labelCol: { span: 8 },
@@ -24,11 +29,22 @@ function SignIn(props) {
         dispatch(SignInUser(value))
                 .then(response => {
                     if(response.payload.signInSuccess) {
+                        window.localStorage.setItem('userId', response.payload.userId);
+                        if (rememberMe === true) {
+                            window.localStorage.setItem('rememberMe', true);
+                        } else {
+                            localStorage.removeItem('rememberMe');
+                        }
+
                         props.history.push('/')
                     } else {
                         alert('Error')
                     }
                 })
+    };
+
+    const rememberMeHandler = () => {
+        setRememberMe(!rememberMe)
     };
 
     return (
@@ -38,7 +54,7 @@ function SignIn(props) {
             <Form
             {...layout}
             name="basic"
-            initialValues={{ remember: false }}
+            initialValues={initial}
             onFinish={onSubmitHandler}
             >
                 <Form.Item
@@ -58,7 +74,7 @@ function SignIn(props) {
                 </Form.Item>
 
                 <Form.Item {...tailLayout} name="remember" valuePropName="checked">
-                    <Checkbox>Remember me</Checkbox>
+                    <Checkbox onChange={rememberMeHandler} checked={rememberMe}>Remember me</Checkbox>
                 </Form.Item>
 
                 <Form.Item {...tailLayout}>
