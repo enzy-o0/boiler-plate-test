@@ -1,6 +1,6 @@
-# boiler-plate-test
+# boilerplate-for-mern-stack
 
-> react.js, node.js, mongoDB, Redux boilter plater
+> react.js, node.js, mongoDB, Redux boilerplate code
 
 ## Skills
 
